@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
-const int txPin = 9;
-const int rxPin = 10;
+const int txPin = 11;
+const int rxPin = 12;
 
 SoftwareSerial BTSerial(rxPin, txPin); // RX, TX
 
