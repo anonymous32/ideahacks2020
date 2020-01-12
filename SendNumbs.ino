@@ -38,6 +38,8 @@ void setup() {
   // alpha4.clear();
   // alpha4.writeDisplay();
   BTSerial.begin(38400);
+  alpha4.clear();
+  alpha4.writeDisplay();
 
 }
 
@@ -51,11 +53,23 @@ bool timerDone = false;
 void loop() {
   char customKey = customKeypad.getKey();
   if (!done && customKey) {
+
+    alpha4.clear();
+    alpha4.writeDisplay();
     Serial.println(customKey);
     if (customKey != '*' && customKey != '#' && num < 1000) {
       int inputNum = (int)customKey - (int)'0';
       num = 10 * num + inputNum;
-      alpha4.writeDigitAscii(counter, str[inputNum]);
+
+      int i = num / 1000;
+      int j = (num / 100) % 10;
+      int k = (num / 10) % 10;
+      int m = num % 10;
+
+      alpha4.writeDigitAscii(0, str[i]);
+      alpha4.writeDigitAscii(1, str[j]);
+      alpha4.writeDigitAscii(2, str[k]);
+      alpha4.writeDigitAscii(3, str[m]);
       alpha4.writeDisplay();
       counter++;
 
@@ -65,6 +79,9 @@ void loop() {
     Serial.println(num);
   }
   if (done && !timerDone) {
+
+
+
     int i = num / 1000;
     int j = (num / 100) % 10;
     int k = (num / 10) % 10;
@@ -83,9 +100,14 @@ void loop() {
             int writable = i * 1000 + j * 100 + k * 10 + m;
             BTSerial.println(String(writable));
             Serial.println(String(writable));
-            
+
             delay(1000);
             alpha4.clear();
+            char customKey2 = customKeypad.getKey();
+            if (customKey2) {
+              timerDone = true;
+              return;
+            }
           }
           if (k != 0) m = 9;
         }
@@ -101,9 +123,15 @@ void loop() {
     alpha4.writeDigitAscii(2, 'n');
     alpha4.writeDigitAscii(3, 'd');
     alpha4.writeDisplay();
-    delay(100);
-    alpha4.clear();
-    alpha4.writeDisplay();
+//    BTSerial.println("End");
+//    Serial.println("End");
+    //    delay(100);
+    //    alpha4.clear();
+    //    alpha4.writeDisplay();
+    num = 0;
+    done = false;
+    counter = 0;
+    timerDone = false;
   }
 
 
